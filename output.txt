@@ -1,0 +1,22 @@
+Interpolation Techniques Visualization Output
+---------------------------------------------
+
+Dataset:
+x[0] = 0.000000, y[0] = 1.000000
+x[1] = 1.000000, y[1] = 2.000000
+x[2] = 2.000000, y[2] = 0.000000
+x[3] = 3.000000, y[3] = 2.000000
+x[4] = 4.000000, y[4] = 1.000000
+
+Query x = 2.500000
+
+Lagrange Interpolation Result           : 0.609375
+Newton Divided Difference Result        : 0.609375
+Newton Forward Interpolation Result     : 0.609375
+
+Error Estimation (Lagrange Method)
+x = 0.000000 | Actual = 1.000000 | Error = 0.000000
+x = 1.000000 | Actual = 2.000000 | Error = 0.000000
+x = 2.000000 | Actual = 0.000000 | Error = 0.000000
+x = 3.000000 | Actual = 2.000000 | Error = 0.000000
+x = 4.000000 | Actual = 1.000000 | Error = 0.000000
