@@ -14,21 +14,24 @@ int DEGREE;
 
 /* ---------- INTERPOLATION METHODS ---------- */
 
-double lagrange(double xp) {
-    double yp = 0;
-    for (int i = 0; i <= DEGREE; i++) {
+double lagrange(double x_point)
+{
+    double y_point = 0;
+    for (int i = 0; i <= DEGREE; i++)
+    {
         double term = y[i];
-        for (int j = 0; j <= DEGREE; j++) {
+        for (int j = 0; j <= DEGREE; j++)
+        {
             if (j != i)
-                term *= (xp - x[j]) / (x[i] - x[j]);
+                term *= (x_point - x[j]) / (x[i] - x[j]);
         }
-        yp += term;
+        y_point += term;
     }
-    return yp;
+    return y_point;
 }
 
-
-double newtonDD(double xp) {
+double newtonDD(double xp)
+{
     int m = DEGREE + 1;
     vector<vector<double>> d(m, vector<double>(m));
 
@@ -43,14 +46,16 @@ double newtonDD(double xp) {
     double res = d[0][0];
     double term = 1;
 
-    for (int i = 1; i < m; i++) {
+    for (int i = 1; i < m; i++)
+    {
         term *= (xp - x[i - 1]);
         res += term * d[0][i];
     }
     return res;
 }
 
-double newtonForward(double xp) {
+double newtonForward(double x_point)
+{
     int m = DEGREE + 1;
     vector<vector<double>> d(m, vector<double>(m));
 
@@ -62,12 +67,13 @@ double newtonForward(double xp) {
             d[i][j] = d[i + 1][j - 1] - d[i][j - 1];
 
     double h = x[1] - x[0];
-    double u = (xp - x[0]) / h;
+    double u = (x_point - x[0]) / h;
 
     double res = y[0];
     double term = 1;
 
-    for (int i = 1; i < m; i++) {
+    for (int i = 1; i < m; i++)
+    {
         term *= (u - (i - 1)) / i;
         res += term * d[0][i];
     }
@@ -76,9 +82,11 @@ double newtonForward(double xp) {
 
 /* ---------- ERROR ESTIMATION ---------- */
 
-void errorEstimation() {
+void errorEstimation()
+{
     cout << "\nError Estimation (Lagrange):\n";
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         double err = fabs(lagrange(x[i]) - y[i]);
         cout << "x = " << x[i] << " | Error = " << err << "\n";
     }
@@ -86,71 +94,76 @@ void errorEstimation() {
 
 /* ---------- DATA EXPORT FOR PYTHON ---------- */
 
-void generateDataFiles() {
+void generateDataFiles()
+{
     ofstream fl("lagrange_data.txt"),
-             fd("newton_dd_data.txt"),
-             ff("newton_forward_data.txt");
+        fd("newton_dd_data.txt"),
+        ff("newton_forward_data.txt");
 
-    for (double xp = x[0]; xp <= x[n - 1]; xp += 0.1) {
+    for (double xp = x[0]; xp <= x[n - 1]; xp += 0.1)
+    {
         fl << xp << " " << lagrange(xp) << "\n";
         fd << xp << " " << newtonDD(xp) << "\n";
         ff << xp << " " << newtonForward(xp) << "\n";
     }
-    fl.close(); fd.close(); ff.close();
+    fl.close();
+    fd.close();
+    ff.close();
 }
 
 /* ---------- PYTHON SCRIPT CREATION ---------- */
 
-void createPythonScript() {
+void createPythonScript()
+{
     ofstream py("plot_interpolation.py");
 
-    py <<
-"import matplotlib.pyplot as plt\n"
-"\n"
-"QUERY_X = float(open('query_x.txt').read())\n"
-"\n"
-"def read_data(file):\n"
-"    x, y = [], []\n"
-"    for line in open(file):\n"
-"        a, b = map(float, line.split())\n"
-"        x.append(a)\n"
-"        y.append(b)\n"
-"    return x, y\n"
-"\n"
-"actual_x, actual_y = read_data('actual_data.txt')\n"
-"\n"
-"def plot(interp_file, title, out):\n"
-"    xi, yi = read_data(interp_file)\n"
-"\n"
-"    # Find interpolated value at QUERY_X\n"
-"    y_query = None\n"
-"    for i in range(len(xi) - 1):\n"
-"        if xi[i] <= QUERY_X <= xi[i + 1]:\n"
-"            y_query = yi[i]\n"
-"            break\n"
-"\n"
-"    plt.plot(actual_x, actual_y, 'bo', label='Actual Data')\n"
-"    plt.plot(xi, yi, 'k-', label='Interpolated Curve')\n"
-"    plt.plot(QUERY_X, y_query, 'rx', markersize=10, label='Interpolated Value')\n"
-"\n"
-"    plt.xlabel('x')\n"
-"    plt.ylabel('y')\n"
-"    plt.title(title)\n"
-"    plt.legend()\n"
-"    plt.grid(True)\n"
-"    plt.savefig(out)\n"
-"    plt.clf()\n"
-"\n"
-"plot('lagrange_data.txt', 'Lagrange Interpolation', 'lagrange.png')\n"
-"plot('newton_dd_data.txt', 'Newton Divided Difference', 'newton_dd.png')\n"
-"plot('newton_forward_data.txt', 'Newton Forward Interpolation', 'newton_forward.png')\n";
+    py << "import matplotlib.pyplot as plt\n"
+          "\n"
+          "QUERY_X = float(open('query_x.txt').read())\n"
+          "\n"
+          "def read_data(file):\n"
+          "    x, y = [], []\n"
+          "    for line in open(file):\n"
+          "        a, b = map(float, line.split())\n"
+          "        x.append(a)\n"
+          "        y.append(b)\n"
+          "    return x, y\n"
+          "\n"
+          "actual_x, actual_y = read_data('actual_data.txt')\n"
+          "\n"
+          "def plot(interp_file, title, out):\n"
+          "    xi, yi = read_data(interp_file)\n"
+          "\n"
+          "    # Find interpolated value at QUERY_X\n"
+          "    y_query = None\n"
+          "    for i in range(len(xi) - 1):\n"
+          "        if xi[i] <= QUERY_X <= xi[i + 1]:\n"
+          "            y_query = yi[i]\n"
+          "            break\n"
+          "\n"
+          "    plt.plot(actual_x, actual_y, 'bo', label='Actual Data')\n"
+          "    plt.plot(xi, yi, 'k-', label='Interpolated Curve')\n"
+          "    plt.plot(QUERY_X, y_query, 'rx', markersize=10, label='Interpolated Value')\n"
+          "\n"
+          "    plt.xlabel('x')\n"
+          "    plt.ylabel('y')\n"
+          "    plt.title(title)\n"
+          "    plt.legend()\n"
+          "    plt.grid(True)\n"
+          "    plt.savefig(out)\n"
+          "    plt.clf()\n"
+          "\n"
+          "plot('lagrange_data.txt', 'Lagrange Interpolation', 'lagrange.png')\n"
+          "plot('newton_dd_data.txt', 'Newton Divided Difference', 'newton_dd.png')\n"
+          "plot('newton_forward_data.txt', 'Newton Forward Interpolation', 'newton_forward.png')\n";
 
     py.close();
 }
 
 /* ---------- GRAPH GENERATION ---------- */
 
-void generateGraphs() {
+void generateGraphs()
+{
     generateDataFiles();
 
     ofstream actual("actual_data.txt");
@@ -169,7 +182,8 @@ void generateGraphs() {
 
 /* ---------- MENU ---------- */
 
-void menu() {
+void menu()
+{
     cout << "\n----- MENU -----\n";
     cout << "1. Lagrange Interpolation\n";
     cout << "2. Newton Divided Difference\n";
@@ -184,34 +198,49 @@ void menu() {
 
 /* ---------- MAIN ---------- */
 
-int main() {
+int main()
+{
     ifstream fin("input.txt");
     fin >> n;
-    DEGREE = min(n-1, 6);
+    DEGREE = min(n - 1, 6);
 
-    x.resize(n); y.resize(n);
-    for (int i = 0; i < n; i++) fin >> x[i] >> y[i];
+    x.resize(n);
+    y.resize(n);
+    for (int i = 0; i < n; i++)
+        fin >> x[i] >> y[i];
     fin >> queryX;
     fin.close();
 
     int ch;
-    do {
+    do
+    {
         menu();
         cin >> ch;
 
-        switch (ch) {
-            case 1: cout << lagrange(queryX) << "\n"; break;
-            case 2: cout << newtonDD(queryX) << "\n"; break;
-            case 3: cout << newtonForward(queryX) << "\n"; break;
-            case 4:
-                cout << "Lagrange : " << lagrange(queryX) << "\n"
-                     << "Divided Difference : " << newtonDD(queryX) << "\n"
-                     << "Newton Forward : " << newtonForward(queryX) << "\n";
-                break;
-            case 5:
-                break;
-            case 6: generateGraphs(); break;
-            case 7: errorEstimation(); break;
+        switch (ch)
+        {
+        case 1:
+            cout << lagrange(queryX) << "\n";
+            break;
+        case 2:
+            cout << newtonDD(queryX) << "\n";
+            break;
+        case 3:
+            cout << newtonForward(queryX) << "\n";
+            break;
+        case 4:
+            cout << "Lagrange : " << lagrange(queryX) << "\n"
+                 << "Divided Difference : " << newtonDD(queryX) << "\n"
+                 << "Newton Forward : " << newtonForward(queryX) << "\n";
+            break;
+        case 5:
+            break;
+        case 6:
+            generateGraphs();
+            break;
+        case 7:
+            errorEstimation();
+            break;
         }
 
         system("pause");
