@@ -204,13 +204,18 @@ int main() {
             case 2: cout << newtonDD(queryX) << "\n"; break;
             case 3: cout << newtonForward(queryX) << "\n"; break;
             case 4:
-                cout << lagrange(queryX) << "\n"
-                     << newtonDD(queryX) << "\n"
-                     << newtonForward(queryX) << "\n";
+                cout << "Lagrange : " << lagrange(queryX) << "\n"
+                     << "Divided Difference : " << newtonDD(queryX) << "\n"
+                     << "Newton Forward : " << newtonForward(queryX) << "\n";
+                break;
+            case 5:
                 break;
             case 6: generateGraphs(); break;
             case 7: errorEstimation(); break;
         }
+
+        system("pause");
+        system("cls");
     } while (ch != 8);
 
     return 0;
